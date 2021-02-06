@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Complex Marker Icons</title>
+    <title>Covid-19 Vaccine Map</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
@@ -20,142 +20,157 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
-    <style type="text/css">
-        #map {
-            height: 50%;
-        }
+</head>
+<style type="text/css">
+    #map {
+        height: 65%;
+    }
 
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
+    html,
+    body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
 
-        .navbar {
-            padding: 18px;
-            background-color: #25283D;
-        }
+    .navbar {
+        padding: 18px;
+        background-color: #25283D;
+    }
 
-        .navbar-dark .navbar-nav .nav-link:hover {
-            color: #717EC3
-        }
+    .navbar-dark .navbar-nav .nav-link:hover {
+        color: #717EC3
+    }
 
-        .navbar-dark .navbar-nav .nav-link {
-            color: white;
-            font-weight: bold;
-        }
+    .navbar-dark .navbar-nav .nav-link {
+        color: white;
+        font-weight: bold;
+    }
 
-        .nav-active {
-            color: white;
-            text-decoration: none;
-        }
+    .nav-active {
+        color: white;
+        text-decoration: none;
+    }
 
-        .nav-active:hover {
-            color: #25283D;
-            text-decoration: none;
-        }
-    </style>
-    <script>
-        function initMap() {
-            const map = new google.maps.Map(document.getElementById("map"), {
-                zoom: 13,
-                center: { lng: -117.823059, lat: 33.669445 },
-            });
-            setMarkers(map);
-        }
-        // This shouldn't be touched or changed 
-        var hospitals = [];
-        let HospitalList = '<%= HopsitalList.join("*")%>';
-        HospitalList = HospitalList.split('*');
-        for(i=0;i<HospitalList.length;i++){
-            HospitalList[i]=HospitalList[i].split(',');
-        }
-        const beaches = []
-        HospitalList.forEach(function (item, index) {
-            beaches.push([HospitalList[index][0],HospitalList[index][2],HospitalList[index][1]]);
+    .nav-active:hover {
+        color: #25283D;
+        text-decoration: none;
+    }
+
+    .footer {
+        width: 100%;
+        background-color: #25283D;
+        color: white;
+        height: 10%;
+        text-align: center;
+    }
+</style>
+<script>
+    function initMap() {
+        const map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 9,
+            center: { lng: -117.823059, lat: 33.669445 },
         });
-        console.log(beaches);
-        
-    
+        setMarkers(map);
+    }
+    // This shouldn't be touched or changed 
+    var hospitals = [];
+    let HospitalList = '<%= HopsitalList.join("*")%>';
+    HospitalList = HospitalList.split('*');
+    for (i = 0; i < HospitalList.length; i++) {
+        HospitalList[i] = HospitalList[i].split(',');
+    }
+    const VaccinationLocations = []
+    HospitalList.forEach(function (item, index) {
+        /*
+        0:Name
+        1:lat
+        2:lng
+        3:City
+        4:State
+        5:Address
+        6:Website Url
+        7:Number of avalible Vaccines
+        */
+        VaccinationLocations.push([HospitalList[index][0], HospitalList[index][1], HospitalList[index][2], HospitalList[index][3], HospitalList[index][4], HospitalList[index][5], HospitalList[index][6], HospitalList[index][7]]);
+    });
 
-        function setMarkers(map) {
+    function setMarkers(map) {
+
+        for (let i = 0; i < VaccinationLocations.length; i++) {
+            const Vaccination_Location = VaccinationLocations[i];
+            const marker = new google.maps.Marker({
+                position: { lat: parseFloat(Vaccination_Location[2]), lng: parseFloat(Vaccination_Location[1]) },
+                map,
+                title: Vaccination_Location[0],
+            });
             const contentString =
                 '<div id="content">' +
                 '<div id="siteNotice">' +
                 "</div>" +
-                '<h1 id="firstHeading" class="firstHeading">Uluru</h1>' +
+                '<h6 id="firstHeading" class="firstHeading">' + Vaccination_Location[0] + '</h6>' +
                 '<div id="bodyContent">' +
-                "<p><b>Uluru</b>, also referred to as <b>Ayers Rock</b>, is a large " +
-                "Heritage Site.</p>" +
-                '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">' +
-                "https://en.wikipedia.org/w/index.php?title=Uluru</a> " +
-                "(last visited June 22, 2009).</p>" +
+                "<p>Number of avalible vaccines: " + Vaccination_Location[7] + "</p>" +
+                "<p>Code of location: " + i + "</p>" +
+                '<a href=' + Vaccination_Location[6] + '>' +
+                Vaccination_Location[6] + "</a> " +
                 "</div>" +
                 "</div>";
             const infowindow = new google.maps.InfoWindow({
                 content: contentString,
                 maxWidth: 200,
             });
-            for (let i = 0; i < beaches.length; i++) {
-                const beach = beaches[i];
-                const marker = new google.maps.Marker({
-                    position: { lat: parseFloat(beach[1]), lng: parseFloat(beach[2]) },
-                    map,
-                    title: beach[0],
-                    label: { color: 'black', fontWeight: 'bold', fontSize: '14px', text: beach[0] }
-                });
-                marker.addListener("click", () => {
-                    infowindow.open(map, marker);
-                });
+            marker.addListener("click", () => {
+                infowindow.open(map, marker);
+            });
 
-            }
         }
+    }
+    /*
+    function myFunction() {
+        fetch('/', {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                "email": "asdasd",
+                "password": "Sads"
+            }),
+        })
+    }
+    function SendEmail() {
+        fetch('/sendemail', {
+            method: "POST",
 
-
-        function myFunction() {
-            fetch('/', {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    "email": "asdasd",
-                    "password": "Sads"
-                }),
-            })
-        }
-    </script>
-</head>
-
+        })
+    }*/
+</script>
 <body>
-
-    <nav class="navbar navbar-expand-lg navbar-dark ">
-        <a class="navbar-brand" href="#" style="font-weight: bold; font-size:x-large;"><span style="color:#717EC3">
-                Covid-19
-            </span> Vaccine Finder</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
-            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav">
-                <a class="nav-active" href="#"
-                    style="font-weight: bold;padding:10px 30px;background-color:#717EC3;border-radius: 15px;text-align: center;">Home</a>
-                <a class="nav-item   nav-link " href="/map" style="margin: auto;">Vaccine Map</a>
-                <a class="nav-item   nav-link " href="#" style="margin: auto;"> Pricing</a>
-
+    <div style="height: 90%; width: 100%;">
+        <nav class="navbar navbar-expand-lg navbar-dark ">
+            <a class="navbar-brand" href="#" style="font-weight: bold; font-size:large;"><span style="color:#717EC3">
+                    Covid-19
+                </span>Vaccine Map </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-active"
+                        style="font-weight: bold;padding:10px 30px;background-color:#717EC3;border-radius: 15px;text-align: center;color: white;">Map</a>
+                    <a class="nav-item   nav-link " href="Registeration" style="margin: auto;">Search & Registeraton</a>
+                    <a class="nav-item   nav-link " href="CovidInfo" style="margin: auto;">Covid Info</a>
+                </div>
             </div>
+        </nav>
+        <div style="padding-left:16px">
         </div>
-    </nav>
-    <div style="padding-left:16px">
- 
-  
-
-       
+        <h2 style="text-align: center;padding: 15px;color:#717EC3;font-weight: bold;"> Covid-19 Vacciation Centers in Orange County</h2>
+        <h5 style="text-align: center;padding: 15px;color:#25283D;font-weight: bold;"> Click on each location's icon for more information</h5>
+        <div id="map"></div>
     </div>
-    <div id="map"></div>
-
-    <button onclick="myFunction()"> dfsf</button>
+    <div class="footer">
+    </div>
 </body>
 
 </html>
-   

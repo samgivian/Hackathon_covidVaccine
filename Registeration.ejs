@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Covid-19 Vaccine Map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+</head>
+<style type="text/css">
+    html,
+    body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .navbar {
+        padding: 18px;
+        background-color: #25283D;
+    }
+
+    .navbar-dark .navbar-nav .nav-link:hover {
+        color: #717EC3
+    }
+
+    .navbar-dark .navbar-nav .nav-link {
+        color: white;
+        font-weight: bold;
+    }
+
+    .nav-active {
+        color: white;
+        text-decoration: none;
+    }
+
+    .nav-active:hover {
+        color: #25283D;
+        text-decoration: none;
+    }
+
+    .footer {
+        width: 100%;
+        background-color: #25283D;
+        color: white;
+        height: 10%;
+
+        text-align: center;
+    }
+</style>
+
+<body>
+    <div style="height: 90%; width: 100%;">
+        <nav class="navbar navbar-expand-lg navbar-dark ">
+            <a class="navbar-brand" href="#" style="font-weight: bold; font-size:large;"><span style="color:#717EC3">
+                    Covid-19
+                </span>Vaccine Map </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+
+                    <a class="nav-item   nav-link " href="/" style="margin: auto;"> Map</a>
+                    <a class="nav-active"
+                        style="font-weight: bold;padding:10px 30px;background-color:#717EC3;border-radius: 15px;text-align: center;color:white">Search& Registeraton</a>
+                        <a class="nav-item   nav-link " href="CovidInfo" style="margin: auto;">Covid Info</a>
+                </div>
+            </div>
+        </nav>
+        <div style="width: 50%; margin: 5% auto;min-width: 200px;">
+            <form>
+                <h2>Register</h2>
+                <div class="form-group">
+                    <label>Email address</label>
+                    <input type="email" class="form-control" id="InputEmail" aria-describedby="emailHelp"
+                        placeholder="Enter email">
+                    <label>Name</label>
+                    <input type="email" class="form-control" id="InputName" aria-describedby="emailHelp"
+                        placeholder="Enter name">
+                </div>
+                <div class="form-group">
+                    <label>Select your hospital code</label>
+                    <select class="form-control" id="Hospitaloptions">
+                    </select>
+                </div>
+                <div style="text-align: center; ">
+                    <button type="button" class="btn btn-primary" onclick="SignUp()">Submit</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <div class="footer">
+    </div>
+    <script type="text/javascript">
+        let HopsitalListLength = '<%= HopsitalListLength %>';
+        let HospitalList = '<%= HopsitalList.join("*")%>';
+        HospitalList = HospitalList.split('*');
+        for (i = 0; i < HospitalList.length; i++) {
+            HospitalList[i] = HospitalList[i].split(',');
+        }
+        let VaccinationLocations = []
+        HospitalList.forEach(function (item, index) {
+            /*
+            0:Name
+            1:lat
+            2:lng
+            3:City
+            4:State
+            5:Address
+            6:Website Url
+            7:Number of avalible Vaccines
+            8:appointments
+            */
+            VaccinationLocations.push([HospitalList[index][0], HospitalList[index][1],HospitalList[index][2], HospitalList[index][3], HospitalList[index][4], HospitalList[index][5], HospitalList[index][6], HospitalList[index][7], HospitalList[index][8]]);
+        });
+        for (r = 0; r < HopsitalListLength; r++) {
+            document.getElementById("Hospitaloptions").innerHTML += '<option>' + r + " : " + VaccinationLocations[r][0] + '</option>'
+        }
+        function SignUp() {
+            var email = document.getElementById("InputEmail").value;
+            var name = document.getElementById("InputName").value;
+            var location_code = document.getElementById("Hospitaloptions").value;
+            var location_code_array = location_code.split(":")
+            var code = location_code_array[0]
+            code_num = parseInt(code);
+            console.log(code_num);
+            var num_vaccine = parseInt(VaccinationLocations[code_num][7]) - 1
+            if (num_vaccine < 0) {
+                alert('you cant register at this location');
+            }
+            else {
+
+
+                VaccinationLocations[code_num][7] = num_vaccine.toString();
+
+                fetch('/Registeration', {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        "email": email,
+                        "location_code": code,
+                        "name": name,
+                        "VaccinationLocations": VaccinationLocations,
+                        "Vaccinelocation_appointment": location_code_array[1]
+                    }),
+                })
+            }
+        }
+    </script>
+
+</body>
+
+</html>
