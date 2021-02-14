@@ -12,8 +12,8 @@ Type the localhost address in your browser and the proejct will pop up.
 ![Screenshot 2](/c2.PNG)
 ![Screenshot 3](/c3.PNG)
 ![Screenshot 4](/c4.PNG)
-##Registeration email
+### Registeration email
 ![Screenshot 5](/c5.PNG)
-##MongoDb DataBase
+### MongoDb DataBase
 ![Screenshot 6](/c6.PNG)
 
