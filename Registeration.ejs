@@ -94,8 +94,13 @@
                 </div>
                 <div class="form-group">
                     <label>Select your hospital code</label>
-                    <select class="form-control" id="Hospitaloptions">
+                    <select class="form-control" id="Hospitaloptions" onchange="HospitalAppointmentSelectionFn()">
                     </select>
+                </div>
+                <div class="form-group">
+                    <label>Select your Appointment Time</label>
+                   <select class="form-control" id="AppointmentTimeSlots" >
+                    </select> 
                 </div>
                 <div style="text-align: center; ">
                     <button type="button" class="btn btn-primary" onclick="SignUp()">Submit</button>
@@ -107,6 +112,17 @@
     <div class="footer">
     </div>
     <script type="text/javascript">
+        let Available_Slots = '<%= Available_Slots.join("*") %>';
+        let Available_Slots_List = []
+        let SelectedHospital = 0
+        //console.log(Available_Slots)
+        Available_Slots = Available_Slots.split('*');
+        //console.log(Available_Slots)
+        Available_Slots.forEach(function (item, index) {
+            let element = item.split(",");
+            Available_Slots_List.push(element)
+        })
+        //console.log(Available_Slots_List)
         let HopsitalListLength = '<%= HopsitalListLength %>';
         let HospitalList = '<%= HopsitalList.join("*")%>';
         HospitalList = HospitalList.split('*');
@@ -130,15 +146,38 @@
         });
         for (r = 0; r < HopsitalListLength; r++) {
             document.getElementById("Hospitaloptions").innerHTML += '<option>' + r + " : " + VaccinationLocations[r][0] + '</option>'
+
+            
+        }
+        Available_Slots_List[0].forEach(function (item, index) {
+            document.getElementById("AppointmentTimeSlots").innerHTML += '<option>'  + item + '</option>'
+
+        })
+        //document.getElementById("AppointmentTimeSlots").innerHTML += '<option>'  + Available_Slots_List[0]+ '</option>'
+        function HospitalAppointmentSelectionFn(){
+            var x = document.getElementById("Hospitaloptions").value;
+            SelectedHospital = x
+            console.log(x)
+            var location_code_array = x.split(":")
+            var code = location_code_array[0]
+            code_num = parseInt(code);
+            //document.getElementById("demo").innerHTML = "You selected: " + x;
+            document.getElementById("AppointmentTimeSlots").innerHTML = ""  
+            Available_Slots_List[code_num].forEach(function (item, index) {
+            document.getElementById("AppointmentTimeSlots").innerHTML += '<option>'  + item + '</option>'
+
+       })
         }
         function SignUp() {
             var email = document.getElementById("InputEmail").value;
             var name = document.getElementById("InputName").value;
+            var appointment =document.getElementById("AppointmentTimeSlots").value
+            appointment = appointment.toString()
             var location_code = document.getElementById("Hospitaloptions").value;
             var location_code_array = location_code.split(":")
             var code = location_code_array[0]
             code_num = parseInt(code);
-            console.log(code_num);
+            //console.log(code_num);
             var num_vaccine = parseInt(VaccinationLocations[code_num][7]) - 1
             if (num_vaccine < 0) {
                 alert('you cant register at this location');
@@ -155,6 +194,7 @@
                         "email": email,
                         "location_code": code,
                         "name": name,
+                        "appointment":appointment,
                         "VaccinationLocations": VaccinationLocations,
                         "Vaccinelocation_appointment": location_code_array[1]
                     }),
