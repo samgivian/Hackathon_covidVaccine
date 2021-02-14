@@ -6,6 +6,8 @@ Go to directly where the folder is locataed in CMD and run the program by typing
 This wil give a port where the webste is hosted. Use the port to view the site.
 ## Step 3
 Type the localhost address in your browser and the proejct will pop up.
+###Note:
+This project uses MongoDb
 ## Images
 ![Screenshot 1](/c1.PNG)
 ![Screenshot 2](/c2.PNG)
