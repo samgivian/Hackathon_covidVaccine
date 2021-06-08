@@ -77,8 +77,8 @@ app.post("/Registeration", function (req, res) {
   var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'covidhackathon47@gmail.com',
-      pass: '1234sampranav'
+      user: '***',
+      pass: '***'
     }
   });
   var mailOptions = {
